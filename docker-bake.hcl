@@ -6,30 +6,94 @@ variable "DESTDIR" {
   default = "./bin"
 }
 
+# GITHUB_REF is the actual ref that triggers the workflow and used as version
+# when tag is pushed! https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+variable "GITHUB_REF" {
+  default = ""
+}
+
 variable "GOLANGCI_LINT_MULTIPLATFORM" {
   default = null
 }
 
 target "_common" {
   args = {
+    BUILDKIT_CONTEXT_KEEP_GIT_DIR = 1
     GO_VERSION = GO_VERSION
+    GIT_REF = GITHUB_REF
   }
 }
 
+# Special target: https://github.com/docker/metadata-action#bake-definition
+target "docker-metadata-action" {
+  tags = ["gomod-updates:local"]
+}
+
 group "default" {
-  targets = ["test"]
+  targets = ["image-local"]
+}
+
+target "binary" {
+  inherits = ["_common"]
+  target = "binary"
+  output = ["${DESTDIR}/build"]
+}
+
+target "artifact" {
+  inherits = ["_common"]
+  target = "artifact"
+  output = ["${DESTDIR}/artifact"]
+}
+
+target "artifact-all" {
+  inherits = ["artifact"]
+  platforms = [
+    "darwin/amd64",
+    "darwin/arm64",
+    "linux/amd64",
+    "linux/arm/v7",
+    "linux/arm64",
+    "linux/ppc64le",
+    "linux/riscv64",
+    "linux/s390x",
+    "windows/amd64",
+    "windows/arm64"
+  ]
+}
+
+target "release" {
+  target = "release"
+  output = ["${DESTDIR}/release"]
+  contexts = {
+    artifacts = "${DESTDIR}/artifact"
+  }
+}
+
+target "image" {
+  inherits = ["_common", "docker-metadata-action"]
+}
+
+target "image-local" {
+  inherits = ["image"]
+  output = ["type=docker"]
+}
+
+target "image-all" {
+  inherits = ["image"]
+  platforms = [
+    "linux/amd64",
+    "linux/arm/v7",
+    "linux/arm64",
+    "linux/ppc64le",
+    "linux/riscv64",
+    "linux/s390x"
+  ]
 }
 
 target "test" {
   inherits = ["_common"]
   target = "test-coverage"
   output = ["${DESTDIR}/coverage"]
-}
-
-target "binary" {
-  inherits = ["_common"]
-  target = "binary"
-  output = ["${DESTDIR}"]
 }
 
 target "vendor" {
