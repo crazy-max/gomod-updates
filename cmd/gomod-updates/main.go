@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"errors"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/crazy-max/gomod-updates/pkg/gomodupdates"
+	"golang.org/x/term"
 )
 
 type cli struct {
@@ -58,7 +60,7 @@ func run() error {
 	parser.FatalIfErrorf(err)
 
 	ctx := context.Background()
-	in, err := input(ctx, flags.Mod)
+	in, err := input(ctx, os.Stdin, flags.Mod, gomodupdates.GoListModules)
 	if err != nil {
 		return err
 	}
@@ -75,15 +77,16 @@ func run() error {
 	})
 }
 
-func input(ctx context.Context, mod string) (io.Reader, error) {
-	stat, err := os.Stdin.Stat()
-	if err != nil {
-		return nil, err
+func input(ctx context.Context, stdin *os.File, mod string, listModules func(context.Context, string, string) ([]byte, error)) (io.Reader, error) {
+	if !term.IsTerminal(int(stdin.Fd())) {
+		in := bufio.NewReader(stdin)
+		if _, err := in.Peek(1); err == nil {
+			return in, nil
+		} else if !errors.Is(err, io.EOF) {
+			return nil, err
+		}
 	}
-	if stat.Mode()&os.ModeCharDevice == 0 {
-		return os.Stdin, nil
-	}
-	out, err := gomodupdates.GoListModules(ctx, "", mod)
+	out, err := listModules(ctx, "", mod)
 	if err != nil {
 		return nil, err
 	}
