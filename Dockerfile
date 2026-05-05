@@ -6,7 +6,7 @@ ARG GOLANGCI_LINT_VERSION="v2.11.3"
 FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}-alpine AS golangci-lint
 
 FROM golang:${GO_VERSION}-alpine AS base
-ENV GOFLAGS="-buildvcs=false"
+ENV GOFLAGS="-mod=vendor"
 WORKDIR /src
 
 FROM base AS test
