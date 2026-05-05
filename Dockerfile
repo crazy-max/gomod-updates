@@ -1,9 +1,6 @@
 # syntax=docker/dockerfile:1
 
 ARG GO_VERSION="1.26"
-ARG GOLANGCI_LINT_VERSION="v2.11.3"
-
-FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}-alpine AS golangci-lint
 
 FROM golang:${GO_VERSION}-alpine AS base
 ENV GOFLAGS="-mod=vendor"
@@ -20,12 +17,6 @@ EOT
 
 FROM scratch AS test-coverage
 COPY --from=test /tmp/coverage.txt /
-
-FROM base AS lint
-RUN --mount=type=bind,target=. \
-    --mount=type=cache,target=/root/.cache \
-    --mount=from=golangci-lint,source=/usr/bin/golangci-lint,target=/usr/bin/golangci-lint \
-  golangci-lint run ./...
 
 FROM base AS build
 ARG VERSION="dev"
