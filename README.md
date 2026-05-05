@@ -1,8 +1,13 @@
 <p align="center">
   <a href="https://pkg.go.dev/github.com/crazy-max/gomod-updates/pkg/gomodupdates"><img src="https://img.shields.io/badge/go.dev-docs-007d9c?logo=go&logoColor=white&style=flat-square" alt="PkgGoDev"></a>
-  <a href="https://goreportcard.com/report/github.com/crazy-max/gomod-updates"><img src="https://goreportcard.com/badge/github.com/crazy-max/gomod-updates?style=flat-square" alt="Go Report"></a>
+  <a href="https://github.com/crazy-max/gomod-updates/releases/latest"><img src="https://img.shields.io/github/release/crazy-max/gomod-updates.svg?style=flat-square" alt="GitHub release"></a>
+  <a href="https://github.com/crazy-max/gomod-updates/releases/latest"><img src="https://img.shields.io/github/downloads/crazy-max/gomod-updates/total.svg?style=flat-square" alt="Total downloads"></a>
+  <a href="https://github.com/crazy-max/gomod-updates/actions?workflow=build"><img src="https://img.shields.io/github/actions/workflow/status/crazy-max/gomod-updates/build.yml?label=build&logo=github&style=flat-square" alt="Build Status"></a>
+  <a href="https://hub.docker.com/r/crazymax/gomod-updates/"><img src="https://img.shields.io/docker/stars/crazymax/gomod-updates.svg?style=flat-square&logo=docker" alt="Docker Stars"></a>
+  <a href="https://hub.docker.com/r/crazymax/gomod-updates/"><img src="https://img.shields.io/docker/pulls/crazymax/gomod-updates.svg?style=flat-square&logo=docker" alt="Docker Pulls"></a>
+  <br /><a href="https://goreportcard.com/report/github.com/crazy-max/gomod-updates"><img src="https://goreportcard.com/badge/github.com/crazy-max/gomod-updates?style=flat-square" alt="Go Report"></a>
   <a href="https://codecov.io/gh/crazy-max/gomod-updates"><img src="https://img.shields.io/codecov/c/github/crazy-max/gomod-updates?logo=codecov&style=flat-square" alt="Codecov"></a>
-  <br /><a href="https://github.com/sponsors/crazy-max"><img src="https://img.shields.io/badge/sponsor-crazy--max-181717.svg?logo=github&style=flat-square" alt="Become a sponsor"></a>
+  <a href="https://github.com/sponsors/crazy-max"><img src="https://img.shields.io/badge/sponsor-crazy--max-181717.svg?logo=github&style=flat-square" alt="Become a sponsor"></a>
   <a href="https://www.paypal.me/crazyws"><img src="https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square" alt="Donate Paypal"></a>
 </p>
 
