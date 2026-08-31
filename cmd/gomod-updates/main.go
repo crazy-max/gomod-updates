@@ -64,13 +64,18 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	toolPaths, err := gomodupdates.ToolPathsFromGoMod("go.mod")
+	if err != nil {
+		return err
+	}
 
 	return gomodupdates.Run(ctx, in, os.Stdout, gomodupdates.Options{
-		Update: flags.Update,
-		Direct: flags.Direct,
-		Major:  flags.Major,
-		CI:     flags.CI,
-		Format: flags.Format,
+		Update:    flags.Update,
+		Direct:    flags.Direct,
+		Major:     flags.Major,
+		CI:        flags.CI,
+		Format:    flags.Format,
+		ToolPaths: toolPaths,
 		Lister: gomodupdates.GoVersionLister{
 			Mod: flags.Mod,
 		},

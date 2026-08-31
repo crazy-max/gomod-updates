@@ -66,6 +66,49 @@ func TestRunRendersMajorColumn(t *testing.T) {
 	}
 }
 
+func TestRunKeepsToolModulesWhenFilteringDirect(t *testing.T) {
+	const input = `{
+	"Path": "github.com/example/root",
+	"Main": true
+}
+{
+	"Path": "github.com/example/tool",
+	"Version": "v1.0.0",
+	"Indirect": true,
+	"Update": {
+		"Path": "github.com/example/tool",
+		"Version": "v1.1.0"
+	}
+}
+{
+	"Path": "github.com/example/indirect",
+	"Version": "v1.0.0",
+	"Indirect": true,
+	"Update": {
+		"Path": "github.com/example/indirect",
+		"Version": "v1.1.0"
+	}
+}`
+
+	var out bytes.Buffer
+	err := Run(context.Background(), strings.NewReader(input), &out, Options{
+		Update:    true,
+		Direct:    true,
+		ToolPaths: []string{"github.com/example/tool/cmd/tool"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got := out.String()
+	if !strings.Contains(got, "github.com/example/tool") {
+		t.Fatalf("expected tool module to be kept:\n%s", got)
+	}
+	if strings.Contains(got, "github.com/example/indirect") {
+		t.Fatalf("expected ordinary indirect module to be filtered:\n%s", got)
+	}
+}
+
 func TestRunCIReturnsErrOutdated(t *testing.T) {
 	err := Run(context.Background(), strings.NewReader(moduleStream), ioDiscard{}, Options{
 		Update: true,

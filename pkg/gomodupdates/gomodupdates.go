@@ -1,7 +1,11 @@
 package gomodupdates
 
 import (
+	"os"
+	"strings"
 	"time"
+
+	"golang.org/x/mod/modfile"
 )
 
 // Module holds information for one module returned by go list -m -json.
@@ -73,4 +77,33 @@ func (m Module) InvalidTimestamp() bool {
 		return false
 	}
 	return mod.Time.After(*mod.Update.Time)
+}
+
+// ToolPathsFromGoMod returns tool package paths declared in a go.mod file.
+func ToolPathsFromGoMod(path string) ([]string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	file, err := modfile.Parse(path, data, nil)
+	if err != nil {
+		return nil, err
+	}
+	tools := make([]string, 0, len(file.Tool))
+	for _, tool := range file.Tool {
+		tools = append(tools, tool.Path)
+	}
+	return tools, nil
+}
+
+func isToolModule(modulePath string, toolPaths []string) bool {
+	for _, toolPath := range toolPaths {
+		if toolPath == modulePath || strings.HasPrefix(toolPath, modulePath+"/") {
+			return true
+		}
+	}
+	return false
 }
