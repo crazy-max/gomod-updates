@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/kong v1.15.0
 	golang.org/x/mod v0.35.0
 	golang.org/x/sync v0.20.0
-	golang.org/x/term v0.42.0
+	golang.org/x/term v0.45.0
 )
 
-require golang.org/x/sys v0.43.0 // indirect
+require golang.org/x/sys v0.47.0 // indirect
