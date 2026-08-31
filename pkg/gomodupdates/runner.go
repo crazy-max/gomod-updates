@@ -31,6 +31,7 @@ type Options struct {
 	Major            bool
 	CI               bool
 	Format           OutputFormat
+	ToolPaths        []string
 	MajorLimit       int
 	MajorConcurrency int
 	Lister           VersionLister
@@ -81,7 +82,8 @@ func Rows(ctx context.Context, modules []Module, opts Options) ([]Row, error) {
 		if mod.Main {
 			continue
 		}
-		if opts.Direct && mod.Indirect {
+		toolModule := isToolModule(mod.Path, opts.ToolPaths)
+		if opts.Direct && mod.Indirect && !toolModule {
 			continue
 		}
 
@@ -89,7 +91,7 @@ func Rows(ctx context.Context, modules []Module, opts Options) ([]Row, error) {
 			Module:          mod.Path,
 			Version:         mod.CurrentVersion(),
 			NewVersion:      mod.NewVersion(),
-			Direct:          !mod.Indirect,
+			Direct:          !mod.Indirect || toolModule,
 			ValidTimestamps: !mod.InvalidTimestamp(),
 		})
 		if opts.Major {
